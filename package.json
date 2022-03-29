@@ -1,0 +1,27 @@
+{
+  "name": "wp-plugin-boilerplate",
+  "version": "1.0.0",
+  "description": "A template for kick-starting the development of a standards-compliant WordPress plugin.",
+  "author": "Teqnomaze",
+  "contributors": [
+    "Musthafa SM <musthafasm@gmail.com> (https://musthafasm.github.io)"
+  ],
+  "license": "MIT",
+  "scripts": {
+    "fix-css": "stylelint '*.css' --fix -q",
+	  "fix-js": "wp-scripts format-js ./assets/js",
+	  "check-css": "wp-scripts lint-style '*.css'",
+	  "check-js": "wp-scripts lint-js 'assets/js/*.js'"
+  },
+  "devDependencies": {
+    "@wordpress/scripts": "^9"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/teqnomaze/wp-plugin-boilerplate.git"
+  },
+  "bugs": {
+    "url": "https://github.com/teqnomaze/wp-plugin-boilerplate/issues"
+  },
+  "homepage": "https://github.com/teqnomaze/wp-plugin-boilerplate#readme"
+}
