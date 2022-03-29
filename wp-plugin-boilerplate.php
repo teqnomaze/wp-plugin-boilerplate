@@ -2,7 +2,7 @@
 /**
  * The main plugin file.
  *
- * @package Wp_Plugin_Boilerplate
+ * @package Wpb
  *
  * @wordpress-plugin
  * Plugin Name:         WP Plugin Bolierplate
@@ -18,8 +18,6 @@
  * Requires PHP:        7.3
  * Requires at least:   5.0
  */
-
-namespace Wpb;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -76,6 +74,55 @@ final class Wp_Plugin_Boilerplate {
 	}
 
 	/**
+	 * The autoloader based on namespace.
+	 *
+	 * @param string $class_name The class name.
+	 * @return void
+	 */
+	public static function autoload( string $class_name ): void {
+
+		if ( false === strpos( $class_name, 'Wpb' ) ) {
+			return;
+		}
+
+		$file_path = explode( '\\', $class_name );
+		$file_name = '';
+
+		if ( isset( $file_path[ count( $file_path ) - 1 ] ) ) {
+
+			$file_name = strtolower(
+				$file_path[ count( $file_path ) - 1 ]
+			);
+
+			$file_name       = str_ireplace( '_', '-', $file_name );
+			$file_name_parts = explode( '-', $file_name );
+			$file_name_index = array_search( 'interface', $file_name_parts, true );
+
+			if ( false !== $file_name_index ) {
+				unset( $file_name_parts[ $file_name_index ] );
+				$file_name = implode( '-', $file_name_parts );
+				$file_name = "interface-{$file_name}.php";
+			} else {
+				$file_name = "class-$file_name.php";
+			}
+		}
+
+		$fully_qualified_path = rtrim( dirname( __FILE__ ), '/\\' ) . '/includes/';
+		$file_path_count      = count( $file_path );
+
+		for ( $i = 1; $i < $file_path_count - 1; $i++ ) {
+			$dir                   = strtolower( $file_path[ $i ] );
+			$fully_qualified_path .= rtrim( $dir, '/\\' ) . '/includes/';
+		}
+
+		$fully_qualified_path .= $file_name;
+
+		if ( stream_resolve_include_path( $fully_qualified_path ) ) {
+			include_once $fully_qualified_path;
+		}
+	}
+
+	/**
 	 * Get the basename.
 	 *
 	 * @return string|null
@@ -109,6 +156,9 @@ final class Wp_Plugin_Boilerplate {
 	 */
 	public function load_self(): self {
 
+		// Load the autoloader.
+		spl_autoload_register( array( $this, 'autoload' ) );
+
 		// Set the private properties.
 		$plugin_data = get_file_data(
 			__FILE__,
@@ -123,11 +173,14 @@ final class Wp_Plugin_Boilerplate {
 		$this->version  = $plugin_data['version'];
 
 		// Load textdomain for the plugin.
-		load_plugin_textdomain( 'wpb-text', false, dirname( $this->basename ) . '/languages' );
+		load_plugin_textdomain( 'wpb-text', false, dirname( $this->get_basename() ) . '/languages' );
 
 		// Enque scripts and style.
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
 		add_action( 'enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+
+		// Initialise admin settings.
+		( new \Wpb\Admin_Settings() )->init();
 
 		return $this;
 	}
@@ -163,3 +216,4 @@ final class Wp_Plugin_Boilerplate {
 
 // Instantiate the plugin class.
 Wp_Plugin_Boilerplate::instance();
+

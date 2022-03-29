@@ -69,6 +69,7 @@
 		<properties>
 			<property name="prefixes" type="array" value="wpb" />
 		</properties>
+		<exclude-pattern>wp-plugin-boilerplate.php</exclude-pattern>
 	</rule>
 
 	<!--

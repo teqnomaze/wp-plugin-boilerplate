@@ -2,12 +2,12 @@
 /**
  * The unit test class file.
  *
- * @package Wp_Plugin_Boilerplate
+ * @package Wpb
  */
 
 namespace Wpb\Tests;
 
-use \Wpb\Wp_Plugin_Boilerplate;
+use Wp_Plugin_Boilerplate;
 
 /**
  * Test class for the core plugin class.

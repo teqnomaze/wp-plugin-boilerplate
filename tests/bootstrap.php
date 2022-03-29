@@ -2,11 +2,11 @@
 /**
  * PhpUnit bootstrap file
  *
- * @package Wp_Plugin_Boilerplate
+ * @package Wpb
  * @subpackage Unit_Test
  */
 
-// Load the autoload file.
+// Load the composer autoloader.
 require_once __DIR__ . '/../vendor/autoload.php';
 
 // Call the bootstrap method of WP Mock.
